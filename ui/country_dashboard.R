@@ -34,10 +34,14 @@ country_dashboard_ui <- function(id) {
                      plotlyOutput(ns("metric_trend_plot"), height="350px"),
                      hr(),
                      plotlyOutput(ns("metric_dist_plot"), height="350px")
-                 ),
-                 h3("Full National Analytics (10 Charts)", style="color:#0f172a; margin-top:30px; font-weight:800;"),
-                 uiOutput(ns("country_viz_grid"))
+                 )
              )
+      )
+    ),
+    fluidRow(
+      column(12,
+             h3("Full National Analytics (10 Charts)", style="color:#0f172a; margin-top:30px; margin-bottom:20px; font-weight:800;"),
+             uiOutput(ns("country_viz_grid"))
       )
     )
   )

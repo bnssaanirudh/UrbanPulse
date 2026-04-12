@@ -53,15 +53,15 @@ city_dashboard_ui <- function(id) {
               plotlyOutput(ns("cluster_plot"), height = "500px"),
               hr(),
               uiOutput(ns("llm_insights"))
-            ),
-            tabPanel(
-              "10x Deep Analytics",
-              h4("Extended Telemetry Visualizations", style = "color:#0f172a; margin-bottom:15px;"),
-              p("Detailed histogram and distribution analysis for 10 unique environmental indicators."),
-              uiOutput(ns("extra_viz_grid"))
             )
           )
         )
+      )
+    ),
+    fluidRow(
+      column(12,
+        h3("Extended Telemetry Visualizations (40 Charts)", style = "color:#0f172a; margin-top:30px; margin-bottom:20px; font-weight:800;"),
+        uiOutput(ns("extra_viz_grid"))
       )
     )
   )

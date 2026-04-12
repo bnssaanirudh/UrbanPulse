@@ -27,7 +27,7 @@ server <- function(input, output, session) {
   
   # Data
   raw_data <- reactive({
-    invalidateLater(5000, session)
+    # invalidateLater(5000, session) # Disabled to stop constant refreshing
     # Get latest simulated sensor data
     load_urban_data()
   })
@@ -91,13 +91,19 @@ server <- function(input, output, session) {
     
     rows <- lapply(1:nrow(top), function(i) {
       r <- top[i,]
-      aqi_color <- if(r$aqi > 50) "#ef4444" else if(r$aqi > 25) "#f59e0b" else "#10b981"
+      aqi_val <- as.numeric(r$aqi)
+      congestion_val <- as.numeric(r$congestion_index)
+      pm25_val <- as.numeric(r$pm25)
+      lat_val <- as.numeric(r$lat)
+      lng_val <- as.numeric(r$lng)
+      
+      aqi_color <- if(is.na(aqi_val)) "#10b981" else if(aqi_val > 50) "#ef4444" else if(aqi_val > 25) "#f59e0b" else "#10b981"
       tags$tr(
         tags$td(r$country),
-        tags$td(paste0(round(r$lat, 2), ", ", round(r$lng, 2))),
-        tags$td(style=paste0("color:", aqi_color, "; font-weight:bold;"), round(r$aqi)),
-        tags$td(paste0(round(r$congestion_index), "%")),
-        tags$td(round(r$pm25, 1))
+        tags$td(paste0(round(lat_val, 2), ", ", round(lng_val, 2))),
+        tags$td(style=paste0("color:", aqi_color, "; font-weight:bold;"), ifelse(is.na(aqi_val), "N/A", round(aqi_val))),
+        tags$td(paste0(ifelse(is.na(congestion_val), "N/A", round(congestion_val)), "%")),
+        tags$td(ifelse(is.na(pm25_val), "N/A", round(pm25_val, 1)))
       )
     })
     
@@ -186,7 +192,7 @@ server <- function(input, output, session) {
   # 10 Country Charts Grid
   output[["country_dash-country_viz_grid"]] <- renderUI({
     plot_output_list <- lapply(1:10, function(i) {
-      box(width = 12, status = "primary",
+      box(width = 6, status = "primary",
           plotlyOutput(paste0("country_plot_", i), height = "300px"))
     })
     do.call(tagList, plot_output_list)
